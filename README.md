@@ -132,6 +132,16 @@ To configure and build ammo into the `builds` directory, run the following:
   $ cmake --build builds
   ```
 
+  -> it should be changed for MAC os like this
+  ```bash
+  $ rm builds # or mv builds builds_backup
+  $ emcmake cmake -B builds
+  $ cmake -B builds -DCLOSURE=1                # compile with closure
+  $ cmake -B builds -DTOTAL_MEMORY=268435456   # allocate a 256MB heap
+  $ cmake -B builds -DALLOW_MEMORY_GROWTH=1    # enable a resizable heap
+  $ cmake --build builds
+  ```
+
 There are also some key options that can be specified during cmake
 configuration, for example:
 
