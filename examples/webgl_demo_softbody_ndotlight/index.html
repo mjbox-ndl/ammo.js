@@ -221,10 +221,10 @@
                 // var cylinder = new THREE.CylinderBufferGeometry(1, 1, 2, 32);
                 // cylinder.translate( 0, 5, 0 );
                 // createSoftVolume( cylinder, 15, 250 );
-                // var sphereGeometry = new THREE.SphereBufferGeometry( 1.5, 60, 50 );
-                // sphereGeometry.translate( -1, 5, 0 );
-                // createSoftVolume( sphereGeometry, 500, pressure );
-                // console.log(`Polycount (sphereGeometry) : ${sphereGeometry.index.count / 3}`);
+                var sphereGeometry = new THREE.SphereBufferGeometry( 1.5, 60, 50 );
+                sphereGeometry.translate( -1, 5, 0 );
+                createSoftVolume( sphereGeometry, 500, pressure );
+                console.log(`Polycount (sphereGeometry) : ${sphereGeometry.index.count / 3}`);
 
                 gltfLoader.load(
                     // "../models/cylinder_highpoly_blender.glb",
@@ -587,7 +587,6 @@
                     var volume = softBodies[ i ];
                     var geometry = volume.geometry;
                     var softBody = volume.userData.physicsBody;
-                    // softBody.addForce( new Ammo.btVector3( 0, -gravityConstant/7, 0 ) );
                     var volumePositions = geometry.attributes.position.array;
                     var volumeNormals = geometry.attributes.normal.array;
                     var association = geometry.ammoIndexAssociation;
