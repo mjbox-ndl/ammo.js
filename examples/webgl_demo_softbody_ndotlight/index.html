@@ -195,9 +195,6 @@
 
 
                 // Create soft volumes
-                var volumeMass = 1; // default 15
-                var pressure = 250; // default 250
-
                 // const geometry = new THREE.BufferGeometry();
                 // // create a simple square shape. We duplicate the top left and bottom right
                 // // vertices because each vertex needs to appear once per triangle.
@@ -223,7 +220,7 @@
                 // createSoftVolume( cylinder, 15, 250 );
                 var sphereGeometry = new THREE.SphereBufferGeometry( 1.5, 60, 50 );
                 sphereGeometry.translate( -1, 5, 0 );
-                createSoftVolume( sphereGeometry, 500, pressure );
+                createSoftVolume( sphereGeometry, 15, 0 );
                 console.log(`Polycount (sphereGeometry) : ${sphereGeometry.index.count / 3}`);
 
                 gltfLoader.load(
@@ -385,8 +382,8 @@
                 // }
                 // var volume = new THREE.Mesh( bufferGeom, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
                 var volume = new THREE.Mesh( bufferGeom, new THREE.MeshPhongMaterial( { color: 0xFFFFFF, wireframe: true } ) );
-                // volume.castShadow = true;
-                // volume.receiveShadow = true;
+                volume.castShadow = true;
+                volume.receiveShadow = true;
                 volume.frustumCulled = false;
                 scene.add( volume );
 
@@ -397,7 +394,7 @@
 
                 // Volume physic object
                 var info = physicsWorld.getWorldInfo();
-                info.set_m_gravity( new Ammo.btVector3( 0, 0, 0 ) );
+                // info.set_m_gravity( new Ammo.btVector3( 0, 0, 0 ) );
                 var volumeSoftBody = softBodyHelpers.CreateFromTriMesh(
                     info,
                     bufferGeom.ammoVertices,
@@ -409,8 +406,8 @@
                 // volumeSoftBody.setTotalDensity( 1000 );
                 // volumeSoftBody.setPose( false, false );
                 var sbConfig = volumeSoftBody.get_m_cfg();
-                sbConfig.set_viterations( 50 );
-                sbConfig.set_piterations( 50 );
+                sbConfig.set_viterations( 40 );
+                sbConfig.set_piterations( 40 );
 
                 // Soft-soft and soft-rigid collisions
                 // SDF_RS 0x01 : Soft-Rigid Signed Distance Field 충돌
@@ -421,17 +418,19 @@
                 sbConfig.set_collisions( 0x11 );
 
                 // Friction
-                sbConfig.set_kDF( 1 );
+                sbConfig.set_kDF( 0.1 );
                 // Damping
-                sbConfig.set_kDP( 1 );
+                sbConfig.set_kDP( 0.01 );
                 // Pressure
                 // sbConfig.set_kPR( pressure );
                 // sbConfig.set_kVC( 1 );
-                sbConfig.set_kPR( 0 );
+                sbConfig.set_kPR( pressure );
                 sbConfig.set_kVC( 0 );
                 // Stiffness
-                volumeSoftBody.get_m_materials().at( 0 ).set_m_kLST( 0.95 );
-                volumeSoftBody.get_m_materials().at( 0 ).set_m_kAST( 0.95 );
+                var stiffness = 1;
+                volumeSoftBody.get_m_materials().at( 0 ).set_m_kLST( stiffness );
+                volumeSoftBody.get_m_materials().at( 0 ).set_m_kAST( stiffness );
+                volumeSoftBody.get_m_materials().at( 0 ).set_m_kVST( stiffness );
 
                 volumeSoftBody.setTotalMass( mass, false );
                 // volumeSoftBody.setGravity( new Ammo.btVector3( 0, gravityConstant, 0 ) );
@@ -566,7 +565,7 @@
 
             function render() {
 
-            	var deltaTime = clock.getDelta() * 0.5;
+            	var deltaTime = clock.getDelta();
 
             	updatePhysics( deltaTime );
 

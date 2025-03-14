@@ -234,6 +234,7 @@ public:
 	struct	Link : Feature
 	{
 		Node*					m_n[2];			// Node pointers
+		Node*					m_n_at(int i)	{ return m_n[i]; }
 		btScalar				m_rl;			// Rest length		
 		int						m_bbending:1;	// Bending link
 		btScalar				m_c0;			// (ima+imb)*kLST
